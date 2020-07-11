@@ -2,6 +2,20 @@
   text-align: center;
 }
 
+#countrySelector {
+  padding: 5px;
+  text-indent: 30px;
+  max-width: 150px;
+}
+
+#chartdiv {
+  width: 100%;
+  height: 100%;
+}
+
+.countryOption {
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
