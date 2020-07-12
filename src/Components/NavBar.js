@@ -1,39 +1,43 @@
 import React, { useState, useEffect } from "react";
+import { fetchCountries } from "./api";
 import axios from "axios";
 
-export const NavBar = () => {
+export const NavBar = ({ changeCountry }) => {
   const [countries, setCountries] = useState([]);
-  const baseURL = "https://api.covid19api.com";
+  const [selectedCountry, setSelectedCountry] = useState("");
 
   useEffect(() => {
-    axios.get(`${baseURL}/countries`).then((res) => {
-      if (res.data != null) {
-        setCountries(res.data);
-      }
-    });
+    const setCountryList = async () => {
+      setCountries(await fetchCountries());
+    };
+    setCountryList();
   }, []);
 
-  const countryList =
-    countries == null ? (
-      <p>Loading...</p>
-    ) : (
-      countries.map((country) => {
-        console.log(country);
-        return (
-          <option
-            key={country.ISO2}
-            className='countryOption'
-            value={country.Slug}
-          >
-            {country.Country}
-          </option>
-        );
-      })
-    );
+  const handleChange = (e) => {
+    console.log(e.target.value);
+    setSelectedCountry(e.target.value);
+  };
 
   return (
-    <select name='countries' id='countrySelector'>
-      {countryList}
-    </select>
+    <form>
+      <select
+        name='countries'
+        id='countrySelector'
+        value={selectedCountry}
+        onChange={handleChange}
+      >
+        {countries.map((country) => {
+          return (
+            <option
+              key={country.ISO2}
+              className='countryOption'
+              value={country.Slug}
+            >
+              {country.Country}
+            </option>
+          );
+        })}
+      </select>
+    </form>
   );
 };

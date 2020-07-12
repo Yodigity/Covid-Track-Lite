@@ -1,51 +1,64 @@
-import React, { useRef, useLayoutEffect } from "react";
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
+import React, { useState, useEffect } from "react";
+import { Bar } from "react-chartjs-2";
 
-export const DataGraph = () => {
-  const chart = useRef(null);
+import Axios from "axios";
 
-  useLayoutEffect(() => {
-    let x = am4core.create("chartdiv", am4charts.XYChart);
+export const DataGraph = ({ baseURL }) => {
+  const [countryData, setCountryData] = useState([]);
 
-    x.paddingRight = 20;
-
-    let data = [];
-    let visits = 10;
-
-    for (let i = 1; i < 366; i++) {
-      visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
-      data.push({
-        date: new Date(2018, 0, i),
-        name: "name" + i,
-        value: visits,
-      });
-    }
-
-    x.data = data;
-
-    let dateAxis = x.xAxes.push(new am4charts.DateAxis());
-    dateAxis.renderer.grid.template.location = 0;
-
-    let valueAxis = x.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.tooltip.disabled = true;
-    valueAxis.renderer.minWidth = 35;
-
-    let series = x.series.push(new am4charts.LineSeries());
-    series.dataFields.dateX = "date";
-    series.dataFields.valueY = "value";
-    series.tooltipText = "{valueY.value}";
-    x.cursor = new am4charts.XYCursor();
-
-    let scrollbarX = new am4charts.XYChartScrollbar();
-    scrollbarX.series.push(series);
-    x.scrollbarX = scrollbarX;
-
-    chart.current = x;
-
-    return () => {
-      x.dispose();
+  useEffect(() => {
+    const getCountryData = async () => {
+      setCountryData(await retrieveData());
     };
+
+    getCountryData();
   }, []);
-  return <div id='chartdiv'></div>;
+
+  const retrieveData = async () => {
+    try {
+      const { data } = await Axios.get(
+        `${baseURL}/live/country/south-africa/status/confirmed`
+      );
+      const sortedData = data.map((resData) => ({
+        confirmed: resData.Confirmed,
+        deaths: resData.Deaths,
+        recovered: resData.Recovered,
+      }));
+
+      return sortedData[data.length - 1];
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const data = {
+    labels: ["Confirmed", "Deaths", "Recovered"],
+    datasets: [
+      {
+        label: "People",
+        backgroundColor: "rgba(255,99,132,0.2)",
+        borderColor: "rgba(255,99,132,1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(255,99,132,0.4)",
+        hoverBorderColor: "rgba(255,99,132,1)",
+        data: [
+          countryData.confirmed,
+          countryData.deaths,
+          countryData.recovered,
+        ],
+      },
+    ],
+  };
+
+  const barChart = (
+    <Bar
+      data={data}
+      options={{
+        legend: { display: false },
+        title: { display: true, text: `Latest update for` },
+      }}
+    />
+  );
+
+  return <div>{barChart}</div>;
 };
