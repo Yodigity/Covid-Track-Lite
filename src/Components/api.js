@@ -9,32 +9,64 @@ export const fetchCountries = async () => {
   return res.data.map((country) => country);
 };
 
-export const fetchData = async (country) => {
+export const fetchGlobalData = async (country) => {
   var url = baseURL;
+
   if (country) {
     url = `${baseURL}/live/country/${country}/status/confirmed`;
 
-    axios.get(url).then((res) => {
-      if (res.data != null) {
-        var data = res.data;
-        console.log(data);
+    try {
+      const { data } = await axios.get(url); //.then((res) => {
 
-        return data;
-      } else {
-        console.error(res.status);
+      var latestData = data[data.length - 1];
+
+      if (latestData) {
+        const sortedData = {
+          confirmed: latestData.Confirmed,
+          deaths: latestData.Deaths,
+          recovered: latestData.Recovered,
+        };
+
+        return sortedData;
       }
-    });
+    } catch (err) {
+      console.error(err);
+    }
   } else {
-    url = `${baseURL}/summary`;
-    axios.get(url).then((res) => {
-      if (res.data != null) {
-        var data = res.data.Global;
-        console.log(data);
+    try {
+      const {
+        data: { Global },
+      } = await axios.get(`${baseURL}/summary`);
 
-        return data;
-      } else {
-        console.error(res.status);
-      }
-    });
+      const sortedData = {
+        confirmed: Global.TotalConfirmed,
+        deaths: Global.TotalDeaths,
+        recovered: Global.TotalRecovered,
+      };
+
+      return sortedData;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+};
+
+export const fetchData = async () => {
+  var url = baseURL;
+
+  try {
+    const {
+      data: { Global },
+    } = await axios.get(`${baseURL}/summary`);
+
+    const sortedData = {
+      confirmed: Global.TotalConfirmed,
+      deaths: Global.TotalDeaths,
+      recovered: Global.TotalRecovered,
+    };
+
+    return sortedData;
+  } catch (err) {
+    console.error(err);
   }
 };

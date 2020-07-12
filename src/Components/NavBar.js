@@ -4,18 +4,20 @@ import axios from "axios";
 
 export const NavBar = ({ changeCountry }) => {
   const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCountry, setCurrentCountry] = useState("");
 
   useEffect(() => {
     const setCountryList = async () => {
       setCountries(await fetchCountries());
     };
+
     setCountryList();
-  }, []);
+  }, [setCountries]);
 
   const handleChange = (e) => {
+    changeCountry(e.target.value);
+    setCurrentCountry(e.target.value);
     console.log(e.target.value);
-    setSelectedCountry(e.target.value);
   };
 
   return (
@@ -24,7 +26,7 @@ export const NavBar = ({ changeCountry }) => {
         name='countries'
         id='countrySelector'
         value={selectedCountry}
-        onChange={handleChange}
+        onChange={(value) => handleChange(value)}
       >
         {countries.map((country) => {
           return (

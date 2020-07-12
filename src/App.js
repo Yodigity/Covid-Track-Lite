@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { fetchData } from "./Components/api";
+import { fetchData, fetchGlobalData } from "./Components/api";
 import logo from "./logo.svg";
 import "./App.css";
 import { NavBar } from "./Components/NavBar";
@@ -13,32 +13,29 @@ function App() {
 
   useEffect(() => {
     const setInitialData = async () => {
-      setCountryData(await fetchData());
+      setCountryData(await fetchGlobalData());
     };
 
     setInitialData();
   }, []);
 
-  const setCountry = (country) => {
-    axios
-      .get(`${baseURL}/live/country/${country}/status/confirmed`)
-      .then((res) => {
-        if (res.data != null) {
-          var data = res.data;
-          console.log(data);
-        } else {
-          console.error(res.status);
-        }
-
-        setSelectedCountry(data);
-      });
+  const setCountry = async (country) => {
+    if (country !== selectedCountry) {
+      setCountryData(await fetchGlobalData(country));
+      setSelectedCountry(country);
+      console.log(countryData);
+    }
   };
 
   return (
     <div className='App'>
       <header className='App-header'>
         <NavBar changeCountry={setCountry} />
-        <DataGraph baseURL={baseURL} selectedCountry={selectedCountry} />
+        <DataGraph
+          baseURL={baseURL}
+          data={countryData}
+          selectedCountry={selectedCountry}
+        />
       </header>
     </div>
   );
