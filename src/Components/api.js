@@ -5,8 +5,9 @@ const baseURL = "https://api.covid19api.com";
 export const fetchCountries = async () => {
   const res = await axios.get(`${baseURL}/countries`);
 
-  console.log(res.data);
-  return res.data.map((country) => country);
+  var unsortedCountries = res.data.map((country) => country);
+  console.log(unsortedCountries);
+  return unsortedCountries.sort((a, b) => (a.Country > b.Country ? 1 : -1));
 };
 
 export const fetchGlobalData = async (country) => {
@@ -19,14 +20,20 @@ export const fetchGlobalData = async (country) => {
       const { data } = await axios.get(url); //.then((res) => {
 
       var latestData = data[data.length - 1];
-
+      console.log(latestData);
       if (latestData) {
         const sortedData = {
           confirmed: latestData.Confirmed,
           deaths: latestData.Deaths,
           recovered: latestData.Recovered,
         };
-
+        return sortedData;
+      } else {
+        const sortedData = {
+          confirmed: 0,
+          deaths: 0,
+          recovered: 0,
+        };
         return sortedData;
       }
     } catch (err) {

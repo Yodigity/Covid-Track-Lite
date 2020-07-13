@@ -8,7 +8,7 @@ import { DataGraph } from "./Components/DataGraph";
 
 function App() {
   const [countryData, setCountryData] = useState({});
-  const [selectedCountry, setSelectedCountry] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const baseURL = "https://api.covid19api.com";
 
   useEffect(() => {
@@ -23,14 +23,13 @@ function App() {
     if (country !== selectedCountry) {
       setCountryData(await fetchGlobalData(country));
       setSelectedCountry(country);
-      console.log(countryData);
     }
   };
 
   return (
     <div className='App'>
       <header className='App-header'>
-        <NavBar changeCountry={setCountry} />
+        <NavBar changeCountry={setCountry} selectedCountry={selectedCountry} />
         <DataGraph
           baseURL={baseURL}
           data={countryData}

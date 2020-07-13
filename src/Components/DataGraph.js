@@ -17,99 +17,41 @@ export const DataGraph = ({ baseURL, selectedCountry, data }) => {
 
   console.log(selectedCountry);
 
-  // const data = {
-  //   labels: ["Confirmed", "Deaths", "Recovered"],
-  //   datasets: [
-  //     {
-  //       label: "Confirmed",
-  //       backgroundColor: "rgba(255,99,132,0.2)",
-  //       borderColor: "rgba(255,99,132,1)",
-  //       borderWidth: 1,
-  //       hoverBackgroundColor: "rgba(255,99,132,0.4)",
-  //       hoverBorderColor: "rgba(255,99,132,1)",
-  //       data: countryData.map(({ Confirmed }) => Confirmed),
-  //     },
-  //     {
-  //       label: "Recovered",
-  //       backgroundColor: "rgba(255,99,132,0.2)",
-  //       borderColor: "rgba(255,99,132,1)",
-  //       borderWidth: 1,
-  //       hoverBackgroundColor: "rgba(255,99,132,0.4)",
-  //       hoverBorderColor: "rgba(255,99,132,1)",
-  //       data: countryData.map(({ Recovered }) => Recovered),
-  //     },
-  //     {
-  //       label: "Deaths",
-  //       backgroundColor: "rgba(255,99,132,0.2)",
-  //       borderColor: "rgba(255,99,132,1)",
-  //       borderWidth: 1,
-  //       hoverBackgroundColor: "rgba(255,99,132,0.4)",
-  //       hoverBorderColor: "rgba(255,99,132,1)",
-  //       data: countryData.map(({ Deaths }) => Deaths),
-  //     },
-  //   ],
-  // };
+  var country = selectedCountry
+    ? `for ${capitaliseCountry(selectedCountry)}`
+    : "Globally";
 
-  const barChart = countryData ? (
-    <Bar
-      data={{
-        labels: ["Confirmed", "Deaths", "Recovered"],
-        datasets: [
-          {
-            label: "People",
-            backgroundColor: "rgba(255,99,132,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            borderWidth: 1,
-            hoverBackgroundColor: "rgba(255,99,132,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
-            data: [data.confirmed, data.deaths, data.recovered],
+  const barChart =
+    data.confirmed != 0 ? (
+      <Bar
+        data={{
+          labels: ["Confirmed", "Deaths", "Recovered"],
+          datasets: [
+            {
+              label: "People",
+              backgroundColor: "rgba(255,99,132,0.2)",
+              borderColor: "rgba(255,99,132,1)",
+              borderWidth: 1,
+              hoverBackgroundColor: "rgba(255,99,132,0.4)",
+              hoverBorderColor: "rgba(255,99,132,1)",
+              data: [data.confirmed, data.deaths, data.recovered],
+            },
+          ],
+        }}
+        options={{
+          legend: { display: false },
+          title: {
+            display: true,
+            text: `Latest update ${country}`,
           },
-          // {
-          //   label: "Recovered",
-          //   backgroundColor: "rgba(255,99,132,0.2)",
-          //   borderColor: "rgba(255,99,132,1)",
-          //   borderWidth: 1,
-          //   hoverBackgroundColor: "rgba(255,99,132,0.4)",
-          //   hoverBorderColor: "rgba(255,99,132,1)",
-          //   data: countryData.recovered,
-          // },
-          // {
-          //   label: "Deaths",
-          //   backgroundColor: "rgba(255,99,132,0.2)",
-          //   borderColor: "rgba(255,99,132,1)",
-          //   borderWidth: 1,
-          //   hoverBackgroundColor: "rgba(255,99,132,0.4)",
-          //   hoverBorderColor: "rgba(255,99,132,1)",
-          //   data: countryData.deaths,
-          // },
-        ],
-      }}
-      options={{
-        legend: { display: false },
-        title: {
-          display: true,
-          text: `Latest update for ${selectedCountry}`,
-        },
-      }}
-    />
-  ) : null;
+        }}
+      />
+    ) : null;
 
   return <div>{barChart}</div>;
 };
 
-// const retrieveData = async () => {
-//   try {
-//     const { data } = await Axios.get(
-//       `${baseURL}/live/country/south-africa/status/confirmed`
-//     );
-//     const sortedData = data.map((resData) => ({
-//       confirmed: resData.Confirmed,
-//       deaths: resData.Deaths,
-//       recovered: resData.Recovered,
-//     }));
-
-//     return sortedData[data.length - 1];
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+//Helper functions
+const capitaliseCountry = (country) => {
+  return country.charAt(0).toUpperCase() + country.slice(1);
+};

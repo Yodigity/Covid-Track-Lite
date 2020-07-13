@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { fetchCountries } from "./api";
-import axios from "axios";
 
 export const NavBar = ({ changeCountry }) => {
   const [countries, setCountries] = useState([]);
@@ -25,7 +24,7 @@ export const NavBar = ({ changeCountry }) => {
       <select
         name='countries'
         id='countrySelector'
-        value={selectedCountry}
+        value={selectedCountry != "" ? selectedCountry : "Global"}
         onChange={(value) => handleChange(value)}
       >
         {countries.map((country) => {
