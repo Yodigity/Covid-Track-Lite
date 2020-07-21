@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { fetchData, fetchGlobalData } from "./Components/api";
-import logo from "./logo.svg";
+
+import { fetchGlobalData } from "./Components/api";
+
 import "./App.css";
 import { NavBar } from "./Components/NavBar";
 import { DataGraph } from "./Components/DataGraph";

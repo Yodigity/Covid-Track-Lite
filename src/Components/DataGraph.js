@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
-import { fetchGlobalData, fetchData } from "./api";
+import { fetchGlobalData } from "./api";
 
-import Axios from "axios";
-
-export const DataGraph = ({ baseURL, selectedCountry, data }) => {
+export const DataGraph = ({ selectedCountry, data }) => {
   const [countryData, setCountryData] = useState();
 
   useEffect(() => {

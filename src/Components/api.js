@@ -17,7 +17,7 @@ export const fetchGlobalData = async (country) => {
     url = `${baseURL}/live/country/${country}/status/confirmed`;
 
     try {
-      const { data } = await axios.get(url); //.then((res) => {
+      const { data } = await axios.get(url);
 
       var latestData = data[data.length - 1];
       console.log(latestData);
